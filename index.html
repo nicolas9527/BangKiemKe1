@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#2e7d32">
+
+<title>Kiểm Kê</title>
+
+<link rel="manifest" href="manifest.json">
+
+<style>
+body {
+    font-family: -apple-system, BlinkMacSystemFont, Arial;
+    background: linear-gradient(#eef7ee,#e3f2e1);
+    margin: 0;
+    padding: 12px;
+}
+
+.container {
+    background: #ffffff;
+    border-radius: 18px;
+    padding: 14px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+}
+
+h2 {
+    text-align: center;
+    color: #2e7d32;
+    margin: 6px 0 14px;
+}
+
+.control-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #e8f5e9;
+    padding: 10px;
+    border-radius: 14px;
+    margin-bottom: 14px;
+}
+
+.ctrl-btn {
+    border: none;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.ctrl-btn.sub {
+    width: 44px;
+    height: 44px;
+    background: #a5d6a7;
+    color: #1b5e20;
+    font-size: 22px;
+}
+
+.ctrl-btn.main {
+    width: 54px;
+    height: 54px;
+    background: linear-gradient(#43a047,#2e7d32);
+    color: #fff;
+    font-size: 24px;
+}
+
+.ctrl-btn:active { transform: scale(0.92); }
+
+.row {
+    display: grid;
+    grid-template-columns: 1fr auto auto auto;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 0;
+}
+
+.label {
+    font-size: 17px;
+    font-weight: 600;
+    color: #2e7d32;
+}
+
+input {
+    width: 58px;
+    height: 32px;
+    font-size: 16px;
+    border-radius: 8px;
+    border: 1.5px solid #a5d6a7;
+    background: #f1f8e9;
+    text-align: center;
+    outline: none;
+}
+
+.plus {
+    width: 34px;
+    height: 34px;
+    background: #43a047;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 22px;
+}
+
+.total {
+    min-width: 90px;
+    text-align: right;
+    font-weight: bold;
+    font-size: 17px;
+    color: #1b5e20;
+}
+
+.hr {
+    border-bottom: 2px dashed #c8e6c9;
+    margin: 2px 0;
+}
+
+.summary {
+    background: #f1f8e9;
+    border-radius: 14px;
+    padding: 12px;
+    margin-top: 14px;
+}
+
+.summary p {
+    margin: 6px 0;
+    font-size: 16px;
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+<h2>📦 KIỂM KÊ</h2>
+
+<div class="control-bar">
+    <button class="ctrl-btn sub" onclick="undo()">⟲</button>
+    <button class="ctrl-btn main" onclick="resetAll()">⟳</button>
+    <button class="ctrl-btn sub" onclick="redo()">⟳</button>
+</div>
+
+<div id="rows"></div>
+
+<div class="summary">
+<p>Tổng cộng: <b id="grand">0</b></p>
+<p>
+Tồn hệ thống:
+<input type="number" inputmode="numeric" pattern="[0-9]*" id="system" oninput="calcDiff()">
+</p>
+<p>Chênh lệch: <b id="diff">—</b></p>
+</div>
+</div>
+
+<script>
+const items = [
+ {id:'lon',  label:'Lon (x1)',   f:1,  unit:null},
+ {id:'loc6', label:'Lốc (x6)',   f:6,  unit:'Lốc'},
+ {id:'loc4', label:'Lốc (x4)',   f:4,  unit:'Lốc'},
+ {id:'th24', label:'Thùng (x24)',f:24, unit:'Thùng'},
+ {id:'th48', label:'Thùng (x48)',f:48, unit:'Thùng'}
+];
+
+let history = [], future = [];
+
+function snapshot(){
+    history.push(JSON.stringify(getState()));
+    if(history.length > 30) history.shift();
+    future = [];
+}
+
+function getState(){
+    const state = {};
+    items.forEach(it=>{
+        const t = document.getElementById('t_'+it.id);
+        state[it.id] = {
+            lon: Number(t.dataset.lon || 0),
+            unit: Number(t.dataset.unit || 0)
+        };
+    });
+    state.system = system.value || '';
+    return state;
+}
+
+function applyState(state){
+    items.forEach(it=>{
+        const t = document.getElementById('t_'+it.id);
+        const s = state[it.id] || {lon:0,unit:0};
+        t.dataset.lon = s.lon;
+        t.dataset.unit = s.unit;
+        t.innerText = it.unit && s.unit>0 ? `${s.lon} (${s.unit} ${it.unit})` : s.lon;
+    });
+    system.value = state.system || '';
+    calcTotal();
+}
+
+function undo(){
+    if(!history.length) return;
+    future.push(JSON.stringify(getState()));
+    applyState(JSON.parse(history.pop()));
+}
+
+function redo(){
+    if(!future.length) return;
+    history.push(JSON.stringify(getState()));
+    applyState(JSON.parse(future.pop()));
+}
+
+function resetAll(){
+    snapshot();
+    items.forEach(it=>{
+        const t = document.getElementById('t_'+it.id);
+        t.innerText = '0';
+        t.dataset.lon = 0;
+        t.dataset.unit = 0;
+        document.getElementById(it.id).value = '';
+    });
+    system.value = '';
+    calcTotal();
+}
+
+function add(id,f){
+    const item = items.find(i=>i.id===id);
+    const input = document.getElementById(id);
+    const qty = Number(input.value||0);
+    if(qty<=0) return;
+
+    snapshot();
+
+    const t = document.getElementById('t_'+id);
+    let lon = Number(t.dataset.lon||0);
+    let unit = Number(t.dataset.unit||0);
+
+    lon += qty * f;
+    unit += qty;
+
+    t.dataset.lon = lon;
+    t.dataset.unit = unit;
+
+    t.innerText = item.unit ? `${lon} (${unit} ${item.unit})` : lon;
+    input.value = '';
+    calcTotal();
+}
+
+function calcTotal(){
+    let sum = 0;
+    document.querySelectorAll('.total').forEach(e=>{
+        sum += Number(e.dataset.lon||0);
+    });
+    grand.innerText = sum;
+    calcDiff();
+}
+
+function calcDiff(){
+    const total = Number(grand.innerText);
+    const sys = Number(system.value||0);
+    const diffv = total - sys;
+    if(diffv>0) diffEl('Dư '+diffv,'#2e7d32');
+    else if(diffv<0) diffEl('Thiếu '+Math.abs(diffv),'#c62828');
+    else diffEl('Đủ','#1565c0');
+}
+
+function diffEl(txt,color){
+    diff.innerText = txt;
+    diff.style.color = color;
+}
+
+const rows = document.getElementById('rows');
+items.forEach((it,i)=>{
+    rows.innerHTML += `
+    <div class="row">
+        <div class="label">${it.label}</div>
+        <input type="number" inputmode="numeric" pattern="[0-9]*" id="${it.id}">
+        <button class="plus" onclick="add('${it.id}',${it.f})">+</button>
+        <div class="total" id="t_${it.id}" data-lon="0" data-unit="0">0</div>
+    </div>
+    ${i<items.length-1?'<div class="hr"></div>':''}
+    `;
+});
+
+// đăng ký service worker
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js');
+}
+</script>
+</body>
+</html>
