@@ -3,294 +3,338 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-
+<meta name="apple-mobile-web-app-capable" content="yes">
 <title>Kiểm Kê</title>
 
-<!-- PWA -->
-<link rel="manifest" href="manifest.json">
-
-<!-- iOS icon (BẮT BUỘC) -->
-<link rel="apple-touch-icon" href="icon-512.png.PNG">
-
-<!-- iOS PWA -->
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Kiểm Kê">
-
-<!-- Theme -->
-<meta name="theme-color" content="#2e7d32">
-
 <style>
-body {
-    font-family: -apple-system, BlinkMacSystemFont, Arial;
-    background: linear-gradient(#eef7ee,#e3f2e1);
-    margin: 0;
-    padding: 12px;
+:root{
+  --blue:#2563eb;
+  --blue2:#1d4ed8;
+  --soft:#eaf1ff;
+  --line:#dbeafe;
+  --text:#0f172a;
+  --muted:#64748b;
+  --danger:#dc2626;
 }
 
-.container {
-    background: #ffffff;
-    border-radius: 18px;
-    padding: 14px;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+/* ===== BACKGROUND ===== */
+body{
+  margin:0;
+  padding:12px;
+  font-family:-apple-system,BlinkMacSystemFont,Arial;
+  color:var(--text);
+  background:
+    radial-gradient(900px 500px at 10% 10%, rgba(37,99,235,.25), transparent 60%),
+    radial-gradient(900px 500px at 90% 30%, rgba(14,165,233,.20), transparent 55%),
+    linear-gradient(180deg,#eef5ff,#e6f0ff);
 }
 
-h2 {
-    text-align: center;
-    color: #2e7d32;
-    margin: 6px 0 14px;
+/* ===== GLASS CONTAINER ===== */
+.container{
+  border-radius:22px;
+  padding:14px;
+  background: rgba(255,255,255,.55);
+  border:1px solid rgba(255,255,255,.45);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow:0 18px 50px rgba(15,23,42,.18);
 }
 
-.control-bar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: #e8f5e9;
-    padding: 10px;
-    border-radius: 14px;
-    margin-bottom: 14px;
+/* ===== HEADER ===== */
+.header{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  margin-bottom:14px;
+}
+.badge{
+  width:38px;height:38px;
+  border-radius:14px;
+  background:linear-gradient(var(--blue),var(--blue2));
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:#fff;
+  font-size:18px;
+  box-shadow:0 10px 20px rgba(37,99,235,.35);
+}
+h2{margin:0;font-size:20px}
+
+/* ===== CONTROL BAR ===== */
+.control-bar{
+  display:flex;
+  gap:10px;
+  padding:10px;
+  border-radius:18px;
+  background:rgba(255,255,255,.45);
+  border:1px solid rgba(255,255,255,.4);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  margin-bottom:14px;
+}
+.ctrl-btn{
+  height:44px;
+  border:none;
+  border-radius:16px;
+  font-size:18px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  -webkit-tap-highlight-color:transparent;
+}
+.ctrl-btn:active{transform:scale(.96)}
+.ctrl-btn.sub{
+  width:56px;
+  background:rgba(255,255,255,.6);
+  border:1px solid var(--line);
+  color:var(--blue2);
+}
+.ctrl-btn.main{
+  flex:1;
+  background:linear-gradient(var(--blue),var(--blue2));
+  color:#fff;
+  box-shadow:0 10px 18px rgba(37,99,235,.35);
 }
 
-.ctrl-btn {
-    border: none;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+/* ===== LIST ===== */
+.list{
+  border-radius:18px;
+  overflow:hidden;
+  background:rgba(255,255,255,.45);
+  border:1px solid rgba(255,255,255,.4);
+  backdrop-filter: blur(12px);
 }
 
-.ctrl-btn.sub {
-    width: 44px;
-    height: 44px;
-    background: #a5d6a7;
-    color: #1b5e20;
-    font-size: 22px;
+.row{
+  display:grid;
+  grid-template-columns:1fr auto auto auto;
+  gap:10px;
+  align-items:center;
+  padding:12px;
+}
+.row+.row{border-top:1px dashed var(--line)}
+
+.label{
+  font-weight:700;
+  color:#0b2a66;
+}
+.label small{
+  display:block;
+  font-size:12px;
+  color:var(--muted);
 }
 
-.ctrl-btn.main {
-    width: 54px;
-    height: 54px;
-    background: linear-gradient(#43a047,#2e7d32);
-    color: #fff;
-    font-size: 24px;
+/* ===== INPUT ===== */
+input{
+  width:70px;
+  height:36px;
+  font-size:16px;
+  border-radius:12px;
+  text-align:center;
+  border:1px solid var(--line);
+  background:rgba(255,255,255,.65);
+  outline:none;
+}
+input:focus{
+  border-color:rgba(37,99,235,.6);
+  box-shadow:0 0 0 4px rgba(37,99,235,.15);
+}
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button{
+  -webkit-appearance:none;margin:0;
+}
+input[type=number]{-moz-appearance:textfield}
+
+.plus{
+  width:38px;height:38px;
+  border:none;
+  border-radius:14px;
+  font-size:22px;
+  color:#fff;
+  background:linear-gradient(var(--blue),var(--blue2));
+  box-shadow:0 8px 16px rgba(37,99,235,.35);
+}
+.plus:active{transform:scale(.96)}
+
+.total{
+  min-width:104px;
+  text-align:right;
+  font-weight:900;
+  color:#0b2a66;
 }
 
-.ctrl-btn:active { transform: scale(0.92); }
-
-.row {
-    display: grid;
-    grid-template-columns: 1fr auto auto auto;
-    align-items: center;
-    gap: 8px;
-    padding: 10px 0;
+/* ===== SUMMARY ===== */
+.summary{
+  margin-top:14px;
+  padding:12px;
+  border-radius:18px;
+  background:rgba(255,255,255,.45);
+  border:1px solid rgba(255,255,255,.4);
+  backdrop-filter: blur(12px);
 }
 
-.label {
-    font-size: 17px;
-    font-weight: 600;
-    color: #2e7d32;
+.kpis{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+}
+.kpi{
+  padding:12px;
+  border-radius:16px;
+  background:rgba(255,255,255,.65);
+  border:1px solid var(--line);
+}
+.kpi span{
+  font-size:12px;
+  color:var(--muted);
+  font-weight:700;
+}
+.kpi b{
+  display:block;
+  margin-top:6px;
+  font-size:22px;
 }
 
-input {
-    width: 58px;
-    height: 32px;
-    font-size: 16px;
-    border-radius: 8px;
-    border: 1.5px solid #a5d6a7;
-    background: #f1f8e9;
-    text-align: center;
-    outline: none;
+.sys,.diff{
+  margin-top:10px;
+  padding:12px;
+  border-radius:16px;
+  background:rgba(255,255,255,.65);
+  border:1px solid var(--line);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
 }
-
-.plus {
-    width: 34px;
-    height: 34px;
-    background: #43a047;
-    color: #fff;
-    border: none;
-    border-radius: 8px;
-    font-size: 22px;
-}
-
-.total {
-    min-width: 90px;
-    text-align: right;
-    font-weight: bold;
-    font-size: 17px;
-    color: #1b5e20;
-}
-
-.hr {
-    border-bottom: 2px dashed #c8e6c9;
-    margin: 2px 0;
-}
-
-.summary {
-    background: #f1f8e9;
-    border-radius: 14px;
-    padding: 12px;
-    margin-top: 14px;
-}
-
-.summary p {
-    margin: 6px 0;
-    font-size: 16px;
-}
+.diff b{font-size:16px}
 </style>
 </head>
 
 <body>
 <div class="container">
-<h2>📦 KIỂM KÊ</h2>
 
-<div class="control-bar">
+  <div class="header">
+    <div class="badge">📦</div>
+    <h2>KIỂM KÊ</h2>
+  </div>
+
+  <div class="control-bar">
     <button class="ctrl-btn sub" onclick="undo()">⟲</button>
-    <button class="ctrl-btn main" onclick="resetAll()">⟳</button>
+    <button class="ctrl-btn main" onclick="resetAll()">Làm lại</button>
     <button class="ctrl-btn sub" onclick="redo()">⟳</button>
-</div>
+  </div>
 
-<div id="rows"></div>
+  <div class="list" id="rows"></div>
 
-<div class="summary">
-<p>Tổng cộng: <b id="grand">0</b></p>
-<p>
-Tồn hệ thống:
-<input type="number" inputmode="numeric" pattern="[0-9]*" id="system" oninput="calcDiff()">
-</p>
-<p>Chênh lệch: <b id="diff">—</b></p>
-</div>
+  <div class="summary">
+    <div class="kpis">
+      <div class="kpi"><span>Tổng cộng</span><b id="grand">0</b></div>
+      <div class="kpi"><span>Chênh lệch</span><b id="diff">—</b></div>
+    </div>
+
+    <div class="sys">
+      <label>Tồn hệ thống</label>
+      <input type="number" id="system" min="0" inputmode="numeric" oninput="calcDiff()">
+    </div>
+  </div>
+
 </div>
 
 <script>
-const items = [
- {id:'lon',  label:'Lon (x1)',   f:1,  unit:null},
- {id:'loc6', label:'Lốc (x6)',   f:6,  unit:'Lốc'},
- {id:'loc4', label:'Lốc (x4)',   f:4,  unit:'Lốc'},
- {id:'th24', label:'Thùng (x24)',f:24, unit:'Thùng'},
- {id:'th48', label:'Thùng (x48)',f:48, unit:'Thùng'}
+const items=[
+ {id:'lon',label:'Lon',hint:'x1',f:1,unit:null},
+ {id:'loc6',label:'Lốc',hint:'x6',f:6,unit:'Lốc'},
+ {id:'loc4',label:'Lốc',hint:'x4',f:4,unit:'Lốc'},
+ {id:'th24',label:'Thùng',hint:'x24',f:24,unit:'Thùng'},
+ {id:'th48',label:'Thùng',hint:'x48',f:48,unit:'Thùng'}
 ];
 
-let history = [], future = [];
+const rows=document.getElementById('rows');
+const systemEl=document.getElementById('system');
+const grandEl=document.getElementById('grand');
+const diffEl=document.getElementById('diff');
+
+let history=[],future=[];
 
 function snapshot(){
-    history.push(JSON.stringify(getState()));
-    if(history.length > 30) history.shift();
-    future = [];
+ history.push(JSON.stringify(getState()));
+ if(history.length>30)history.shift();
+ future=[];
 }
 
 function getState(){
-    const state = {};
-    items.forEach(it=>{
-        const t = document.getElementById('t_'+it.id);
-        state[it.id] = {
-            lon: Number(t.dataset.lon || 0),
-            unit: Number(t.dataset.unit || 0)
-        };
-    });
-    state.system = system.value || '';
-    return state;
+ const s={system:systemEl.value||''};
+ items.forEach(i=>{
+  const t=document.getElementById('t_'+i.id);
+  s[i.id]={lon:+t.dataset.lon||0,unit:+t.dataset.unit||0};
+ });
+ return s;
 }
 
-function applyState(state){
-    items.forEach(it=>{
-        const t = document.getElementById('t_'+it.id);
-        const s = state[it.id] || {lon:0,unit:0};
-        t.dataset.lon = s.lon;
-        t.dataset.unit = s.unit;
-        t.innerText = it.unit && s.unit>0 ? `${s.lon} (${s.unit} ${it.unit})` : s.lon;
-    });
-    system.value = state.system || '';
-    calcTotal();
+function applyState(s){
+ items.forEach(i=>{
+  const t=document.getElementById('t_'+i.id);
+  const d=s[i.id]||{lon:0,unit:0};
+  t.dataset.lon=d.lon;t.dataset.unit=d.unit;
+  t.innerText=i.unit&&d.unit?`${d.lon} (${d.unit} ${i.unit})`:d.lon;
+ });
+ systemEl.value=s.system||'';
+ calcTotal();
 }
 
-function undo(){
-    if(!history.length) return;
-    future.push(JSON.stringify(getState()));
-    applyState(JSON.parse(history.pop()));
-}
-
-function redo(){
-    if(!future.length) return;
-    history.push(JSON.stringify(getState()));
-    applyState(JSON.parse(future.pop()));
-}
+function undo(){if(!history.length)return;future.push(JSON.stringify(getState()));applyState(JSON.parse(history.pop()));}
+function redo(){if(!future.length)return;history.push(JSON.stringify(getState()));applyState(JSON.parse(future.pop()));}
 
 function resetAll(){
-    snapshot();
-    items.forEach(it=>{
-        const t = document.getElementById('t_'+it.id);
-        t.innerText = '0';
-        t.dataset.lon = 0;
-        t.dataset.unit = 0;
-        document.getElementById(it.id).value = '';
-    });
-    system.value = '';
-    calcTotal();
+ snapshot();
+ items.forEach(i=>{
+  const t=document.getElementById('t_'+i.id);
+  t.dataset.lon=0;t.dataset.unit=0;t.innerText='0';
+  document.getElementById(i.id).value='';
+ });
+ systemEl.value='';
+ calcTotal();
 }
 
 function add(id,f){
-    const item = items.find(i=>i.id===id);
-    const input = document.getElementById(id);
-    const qty = Number(input.value||0);
-    if(qty<=0) return;
-
-    snapshot();
-
-    const t = document.getElementById('t_'+id);
-    let lon = Number(t.dataset.lon||0);
-    let unit = Number(t.dataset.unit||0);
-
-    lon += qty * f;
-    unit += qty;
-
-    t.dataset.lon = lon;
-    t.dataset.unit = unit;
-
-    t.innerText = item.unit ? `${lon} (${unit} ${item.unit})` : lon;
-    input.value = '';
-    calcTotal();
+ const inp=document.getElementById(id);
+ const qty=Math.max(0,parseInt(inp.value||0));
+ if(!qty)return;
+ snapshot();
+ const t=document.getElementById('t_'+id);
+ let lon=+t.dataset.lon||0,unit=+t.dataset.unit||0;
+ lon+=qty*f;unit+=qty;
+ t.dataset.lon=lon;t.dataset.unit=unit;
+ const it=items.find(i=>i.id===id);
+ t.innerText=it.unit?`${lon} (${unit} ${it.unit})`:lon;
+ inp.value='';
+ calcTotal();
 }
 
 function calcTotal(){
-    let sum = 0;
-    document.querySelectorAll('.total').forEach(e=>{
-        sum += Number(e.dataset.lon||0);
-    });
-    grand.innerText = sum;
-    calcDiff();
+ let sum=0;
+ document.querySelectorAll('.total').forEach(e=>sum+=+e.dataset.lon||0);
+ grandEl.innerText=sum;
+ calcDiff();
 }
 
 function calcDiff(){
-    const total = Number(grand.innerText);
-    const sys = Number(system.value||0);
-    const diffv = total - sys;
-    if(diffv>0) diffEl('Dư '+diffv,'#2e7d32');
-    else if(diffv<0) diffEl('Thiếu '+Math.abs(diffv),'#c62828');
-    else diffEl('Đủ','#1565c0');
+ const d=(+grandEl.innerText||0)-(+systemEl.value||0);
+ if(d>0){diffEl.innerText='Dư '+d;diffEl.style.color='#16a34a'}
+ else if(d<0){diffEl.innerText='Thiếu '+Math.abs(d);diffEl.style.color='#dc2626'}
+ else{diffEl.innerText='Đủ';diffEl.style.color='#2563eb'}
 }
 
-function diffEl(txt,color){
-    diff.innerText = txt;
-    diff.style.color = color;
-}
-
-const rows = document.getElementById('rows');
-items.forEach((it,i)=>{
-    rows.innerHTML += `
-    <div class="row">
-        <div class="label">${it.label}</div>
-        <input type="number" inputmode="numeric" pattern="[0-9]*" id="${it.id}">
-        <button class="plus" onclick="add('${it.id}',${it.f})">+</button>
-        <div class="total" id="t_${it.id}" data-lon="0" data-unit="0">0</div>
-    </div>
-    ${i<items.length-1?'<div class="hr"></div>':''}
-    `;
+items.forEach(i=>{
+ rows.insertAdjacentHTML('beforeend',`
+  <div class="row">
+    <div class="label">${i.label}<small>${i.hint}</small></div>
+    <input type="number" id="${i.id}" min="0" inputmode="numeric">
+    <button class="plus" onclick="add('${i.id}',${i.f})">+</button>
+    <div class="total" id="t_${i.id}" data-lon="0" data-unit="0">0</div>
+  </div>
+ `);
 });
-
-// service worker
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('sw.js');
-}
 </script>
 </body>
 </html>
