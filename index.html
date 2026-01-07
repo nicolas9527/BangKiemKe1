@@ -1,213 +1,221 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<title>Kiểm Kê</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
-<style>
-:root{
-  --blue:#2563eb;
-  --blue2:#1d4ed8;
-  --soft:#eaf1ff;
-  --line:#dbeafe;
-  --text:#0f172a;
-  --muted:#64748b;
-  --danger:#dc2626;
-}
+  <!-- PWA / iOS -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Kiểm Kê">
 
-/* ===== BACKGROUND ===== */
-body{
-  margin:0;
-  padding:12px;
-  font-family:-apple-system,BlinkMacSystemFont,Arial;
-  color:var(--text);
-  background:
-    radial-gradient(900px 500px at 10% 10%, rgba(37,99,235,.25), transparent 60%),
-    radial-gradient(900px 500px at 90% 30%, rgba(14,165,233,.20), transparent 55%),
-    linear-gradient(180deg,#eef5ff,#e6f0ff);
-}
+  <!-- Android/Chrome PWA -->
+  <meta name="theme-color" content="#2563eb">
 
-/* ===== GLASS CONTAINER ===== */
-.container{
-  border-radius:22px;
-  padding:14px;
-  background: rgba(255,255,255,.55);
-  border:1px solid rgba(255,255,255,.45);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  box-shadow:0 18px 50px rgba(15,23,42,.18);
-}
+  <!-- ICONS -->
+  <link rel="icon" type="image/png" href="icon.PNG">
+  <link rel="apple-touch-icon" href="icon.PNG">
 
-/* ===== HEADER ===== */
-.header{
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  gap:10px;
-  margin-bottom:14px;
-}
-.badge{
-  width:38px;height:38px;
-  border-radius:14px;
-  background:linear-gradient(var(--blue),var(--blue2));
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  color:#fff;
-  font-size:18px;
-  box-shadow:0 10px 20px rgba(37,99,235,.35);
-}
-h2{margin:0;font-size:20px}
+  <!-- Manifest -->
+  <link rel="manifest" href="manifest.webmanifest">
 
-/* ===== CONTROL BAR ===== */
-.control-bar{
-  display:flex;
-  gap:10px;
-  padding:10px;
-  border-radius:18px;
-  background:rgba(255,255,255,.45);
-  border:1px solid rgba(255,255,255,.4);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  margin-bottom:14px;
-}
-.ctrl-btn{
-  height:44px;
-  border:none;
-  border-radius:16px;
-  font-size:18px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  -webkit-tap-highlight-color:transparent;
-}
-.ctrl-btn:active{transform:scale(.96)}
-.ctrl-btn.sub{
-  width:56px;
-  background:rgba(255,255,255,.6);
-  border:1px solid var(--line);
-  color:var(--blue2);
-}
-.ctrl-btn.main{
-  flex:1;
-  background:linear-gradient(var(--blue),var(--blue2));
-  color:#fff;
-  box-shadow:0 10px 18px rgba(37,99,235,.35);
-}
+  <title>Kiểm Kê</title>
 
-/* ===== LIST ===== */
-.list{
-  border-radius:18px;
-  overflow:hidden;
-  background:rgba(255,255,255,.45);
-  border:1px solid rgba(255,255,255,.4);
-  backdrop-filter: blur(12px);
-}
+  <style>
+    :root{
+      --blue:#2563eb;
+      --blue2:#1d4ed8;
+      --soft:#eaf1ff;
+      --line:#dbeafe;
+      --text:#0f172a;
+      --muted:#64748b;
+      --danger:#dc2626;
+    }
 
-.row{
-  display:grid;
-  grid-template-columns:1fr auto auto auto;
-  gap:10px;
-  align-items:center;
-  padding:12px;
-}
-.row+.row{border-top:1px dashed var(--line)}
+    body{
+      margin:0;
+      padding:12px;
+      font-family:-apple-system,BlinkMacSystemFont,Arial;
+      color:var(--text);
+      background:
+        radial-gradient(900px 500px at 10% 10%, rgba(37,99,235,.25), transparent 60%),
+        radial-gradient(900px 500px at 90% 30%, rgba(14,165,233,.20), transparent 55%),
+        linear-gradient(180deg,#eef5ff,#e6f0ff);
+    }
 
-.label{
-  font-weight:700;
-  color:#0b2a66;
-}
-.label small{
-  display:block;
-  font-size:12px;
-  color:var(--muted);
-}
+    .container{
+      border-radius:22px;
+      padding:14px;
+      background: rgba(255,255,255,.55);
+      border:1px solid rgba(255,255,255,.45);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow:0 18px 50px rgba(15,23,42,.18);
+    }
 
-/* ===== INPUT ===== */
-input{
-  width:70px;
-  height:36px;
-  font-size:16px;
-  border-radius:12px;
-  text-align:center;
-  border:1px solid var(--line);
-  background:rgba(255,255,255,.65);
-  outline:none;
-}
-input:focus{
-  border-color:rgba(37,99,235,.6);
-  box-shadow:0 0 0 4px rgba(37,99,235,.15);
-}
-input[type=number]::-webkit-inner-spin-button,
-input[type=number]::-webkit-outer-spin-button{
-  -webkit-appearance:none;margin:0;
-}
-input[type=number]{-moz-appearance:textfield}
+    .header{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:10px;
+      margin-bottom:14px;
+    }
+    .badge{
+      width:38px;height:38px;
+      border-radius:14px;
+      background:linear-gradient(var(--blue),var(--blue2));
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:#fff;
+      font-size:18px;
+      box-shadow:0 10px 20px rgba(37,99,235,.35);
+    }
+    h2{margin:0;font-size:20px}
 
-.plus{
-  width:38px;height:38px;
-  border:none;
-  border-radius:14px;
-  font-size:22px;
-  color:#fff;
-  background:linear-gradient(var(--blue),var(--blue2));
-  box-shadow:0 8px 16px rgba(37,99,235,.35);
-}
-.plus:active{transform:scale(.96)}
+    .control-bar{
+      display:flex;
+      gap:10px;
+      padding:10px;
+      border-radius:18px;
+      background:rgba(255,255,255,.45);
+      border:1px solid rgba(255,255,255,.4);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      margin-bottom:14px;
+    }
+    .ctrl-btn{
+      height:44px;
+      border:none;
+      border-radius:16px;
+      font-size:18px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      -webkit-tap-highlight-color:transparent;
+    }
+    .ctrl-btn:active{transform:scale(.96)}
+    .ctrl-btn.sub{
+      width:56px;
+      background:rgba(255,255,255,.6);
+      border:1px solid var(--line);
+      color:var(--blue2);
+    }
+    .ctrl-btn.main{
+      flex:1;
+      background:linear-gradient(var(--blue),var(--blue2));
+      color:#fff;
+      box-shadow:0 10px 18px rgba(37,99,235,.35);
+    }
 
-.total{
-  min-width:104px;
-  text-align:right;
-  font-weight:900;
-  color:#0b2a66;
-}
+    .list{
+      border-radius:18px;
+      overflow:hidden;
+      background:rgba(255,255,255,.45);
+      border:1px solid rgba(255,255,255,.4);
+      backdrop-filter: blur(12px);
+    }
 
-/* ===== SUMMARY ===== */
-.summary{
-  margin-top:14px;
-  padding:12px;
-  border-radius:18px;
-  background:rgba(255,255,255,.45);
-  border:1px solid rgba(255,255,255,.4);
-  backdrop-filter: blur(12px);
-}
+    .row{
+      display:grid;
+      grid-template-columns:1fr auto auto auto;
+      gap:10px;
+      align-items:center;
+      padding:12px;
+    }
+    .row+.row{border-top:1px dashed var(--line)}
 
-.kpis{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:10px;
-}
-.kpi{
-  padding:12px;
-  border-radius:16px;
-  background:rgba(255,255,255,.65);
-  border:1px solid var(--line);
-}
-.kpi span{
-  font-size:12px;
-  color:var(--muted);
-  font-weight:700;
-}
-.kpi b{
-  display:block;
-  margin-top:6px;
-  font-size:22px;
-}
+    .label{
+      font-weight:700;
+      color:#0b2a66;
+    }
+    .label small{
+      display:block;
+      font-size:12px;
+      color:var(--muted);
+    }
 
-.sys,.diff{
-  margin-top:10px;
-  padding:12px;
-  border-radius:16px;
-  background:rgba(255,255,255,.65);
-  border:1px solid var(--line);
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-}
-.diff b{font-size:16px}
-</style>
+    input{
+      width:70px;
+      height:36px;
+      font-size:16px; /* chống zoom iOS */
+      border-radius:12px;
+      text-align:center;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.65);
+      outline:none;
+    }
+    input:focus{
+      border-color:rgba(37,99,235,.6);
+      box-shadow:0 0 0 4px rgba(37,99,235,.15);
+    }
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button{
+      -webkit-appearance:none;margin:0;
+    }
+    input[type=number]{-moz-appearance:textfield}
+
+    .plus{
+      width:38px;height:38px;
+      border:none;
+      border-radius:14px;
+      font-size:22px;
+      color:#fff;
+      background:linear-gradient(var(--blue),var(--blue2));
+      box-shadow:0 8px 16px rgba(37,99,235,.35);
+    }
+    .plus:active{transform:scale(.96)}
+
+    .total{
+      min-width:104px;
+      text-align:right;
+      font-weight:900;
+      color:#0b2a66;
+    }
+
+    .summary{
+      margin-top:14px;
+      padding:12px;
+      border-radius:18px;
+      background:rgba(255,255,255,.45);
+      border:1px solid rgba(255,255,255,.4);
+      backdrop-filter: blur(12px);
+    }
+
+    .kpis{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+    }
+    .kpi{
+      padding:12px;
+      border-radius:16px;
+      background:rgba(255,255,255,.65);
+      border:1px solid var(--line);
+    }
+    .kpi span{
+      font-size:12px;
+      color:var(--muted);
+      font-weight:700;
+    }
+    .kpi b{
+      display:block;
+      margin-top:6px;
+      font-size:22px;
+    }
+
+    .sys,.diff{
+      margin-top:10px;
+      padding:12px;
+      border-radius:16px;
+      background:rgba(255,255,255,.65);
+      border:1px solid var(--line);
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+    }
+    .diff b{font-size:16px}
+  </style>
 </head>
 
 <body>
@@ -233,7 +241,7 @@ input[type=number]{-moz-appearance:textfield}
     </div>
 
     <div class="sys">
-      <label>Tồn hệ thống</label>
+      <label for="system">Tồn hệ thống</label>
       <input type="number" id="system" min="0" inputmode="numeric" oninput="calcDiff()">
     </div>
   </div>
@@ -257,84 +265,95 @@ const diffEl=document.getElementById('diff');
 let history=[],future=[];
 
 function snapshot(){
- history.push(JSON.stringify(getState()));
- if(history.length>30)history.shift();
- future=[];
+  history.push(JSON.stringify(getState()));
+  if(history.length>30)history.shift();
+  future=[];
 }
 
 function getState(){
- const s={system:systemEl.value||''};
- items.forEach(i=>{
-  const t=document.getElementById('t_'+i.id);
-  s[i.id]={lon:+t.dataset.lon||0,unit:+t.dataset.unit||0};
- });
- return s;
+  const s={system:systemEl.value||''};
+  items.forEach(i=>{
+    const t=document.getElementById('t_'+i.id);
+    s[i.id]={lon:+t.dataset.lon||0,unit:+t.dataset.unit||0};
+  });
+  return s;
 }
 
 function applyState(s){
- items.forEach(i=>{
-  const t=document.getElementById('t_'+i.id);
-  const d=s[i.id]||{lon:0,unit:0};
-  t.dataset.lon=d.lon;t.dataset.unit=d.unit;
-  t.innerText=i.unit&&d.unit?`${d.lon} (${d.unit} ${i.unit})`:d.lon;
- });
- systemEl.value=s.system||'';
- calcTotal();
+  items.forEach(i=>{
+    const t=document.getElementById('t_'+i.id);
+    const d=s[i.id]||{lon:0,unit:0};
+    t.dataset.lon=d.lon;t.dataset.unit=d.unit;
+    t.innerText=i.unit&&d.unit?`${d.lon} (${d.unit} ${i.unit})`:d.lon;
+  });
+  systemEl.value=s.system||'';
+  calcTotal();
 }
 
 function undo(){if(!history.length)return;future.push(JSON.stringify(getState()));applyState(JSON.parse(history.pop()));}
 function redo(){if(!future.length)return;history.push(JSON.stringify(getState()));applyState(JSON.parse(future.pop()));}
 
 function resetAll(){
- snapshot();
- items.forEach(i=>{
-  const t=document.getElementById('t_'+i.id);
-  t.dataset.lon=0;t.dataset.unit=0;t.innerText='0';
-  document.getElementById(i.id).value='';
- });
- systemEl.value='';
- calcTotal();
+  snapshot();
+  items.forEach(i=>{
+    const t=document.getElementById('t_'+i.id);
+    t.dataset.lon=0;t.dataset.unit=0;t.innerText='0';
+    document.getElementById(i.id).value='';
+  });
+  systemEl.value='';
+  calcTotal();
 }
 
 function add(id,f){
- const inp=document.getElementById(id);
- const qty=Math.max(0,parseInt(inp.value||0));
- if(!qty)return;
- snapshot();
- const t=document.getElementById('t_'+id);
- let lon=+t.dataset.lon||0,unit=+t.dataset.unit||0;
- lon+=qty*f;unit+=qty;
- t.dataset.lon=lon;t.dataset.unit=unit;
- const it=items.find(i=>i.id===id);
- t.innerText=it.unit?`${lon} (${unit} ${it.unit})`:lon;
- inp.value='';
- calcTotal();
+  const inp=document.getElementById(id);
+  const qty=Math.max(0,parseInt(inp.value||0,10));
+  if(!qty)return;
+
+  snapshot();
+
+  const t=document.getElementById('t_'+id);
+  let lon=+t.dataset.lon||0,unit=+t.dataset.unit||0;
+  lon+=qty*f;unit+=qty;
+
+  t.dataset.lon=lon;t.dataset.unit=unit;
+  const it=items.find(i=>i.id===id);
+  t.innerText=it.unit?`${lon} (${unit} ${it.unit})`:lon;
+
+  inp.value='';
+  calcTotal();
 }
 
 function calcTotal(){
- let sum=0;
- document.querySelectorAll('.total').forEach(e=>sum+=+e.dataset.lon||0);
- grandEl.innerText=sum;
- calcDiff();
+  let sum=0;
+  document.querySelectorAll('.total').forEach(e=>sum+=+e.dataset.lon||0);
+  grandEl.innerText=sum;
+  calcDiff();
 }
 
 function calcDiff(){
- const d=(+grandEl.innerText||0)-(+systemEl.value||0);
- if(d>0){diffEl.innerText='Dư '+d;diffEl.style.color='#16a34a'}
- else if(d<0){diffEl.innerText='Thiếu '+Math.abs(d);diffEl.style.color='#dc2626'}
- else{diffEl.innerText='Đủ';diffEl.style.color='#2563eb'}
+  const d=(+grandEl.innerText||0)-(+systemEl.value||0);
+  if(d>0){diffEl.innerText='Dư '+d;diffEl.style.color='#16a34a'}
+  else if(d<0){diffEl.innerText='Thiếu '+Math.abs(d);diffEl.style.color='#dc2626'}
+  else{diffEl.innerText='Đủ';diffEl.style.color='#2563eb'}
 }
 
 items.forEach(i=>{
- rows.insertAdjacentHTML('beforeend',`
-  <div class="row">
-    <div class="label">${i.label}<small>${i.hint}</small></div>
-    <input type="number" id="${i.id}" min="0" inputmode="numeric">
-    <button class="plus" onclick="add('${i.id}',${i.f})">+</button>
-    <div class="total" id="t_${i.id}" data-lon="0" data-unit="0">0</div>
-  </div>
- `);
+  rows.insertAdjacentHTML('beforeend',`
+    <div class="row">
+      <div class="label">${i.label}<small>${i.hint}</small></div>
+      <input type="number" id="${i.id}" min="0" inputmode="numeric" pattern="[0-9]*">
+      <button class="plus" onclick="add('${i.id}',${i.f})">+</button>
+      <div class="total" id="t_${i.id}" data-lon="0" data-unit="0">0</div>
+    </div>
+  `);
 });
+
+/* ===== Service Worker registration ===== */
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js').catch(()=>{});
+  });
+}
 </script>
 </body>
 </html>
